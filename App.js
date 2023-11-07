@@ -1,62 +1,50 @@
-import React, { useState } from "react";
-import Axios from "axios";
-import './App.css';
-
-
+import React, { useState } from 'react'
+import axios from 'axios'
 const KEY="7cd2a1d82a8721c453fbcef061d5246d"
 
-const App=()=>{
-  const[city,setCity]=useState("");
-  const [data,setData]=useState();
-  const fetchdata=async()=>{
-    try{
-      const response= await Axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${KEY}`)
-      setData(response.data)
-      console.log(response.data);
-      
-
-    }
-    catch (err){
-      alert('error in api calling')
-      
-
-      
-
-    }
+const Weather = () => {
+    const[city,setCity]=useState()
+    const [weatherData, setWeatherData] = useState(null);
+const change=(e)=>{
+    setCity(e.target.value)
+}
     
-  }
-  return(
-    <div className="App">
+const handleChange=async()=>{
+    try{
+        const response = await axios.get(
+        `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${KEY}`
+        )
+        setWeatherData(response.data);}
+    catch(error){
+        
 
-      <div className="title">weather App</div>
-      <div className="input-conatiner"> 
-      <input
-      type="text"
-      className="input"
-      value={city}
-      onChange={e=>{setCity(e.target.value)}}
-      placeholder="enter the city name"/>
-      
-      <button className='fetch'onClick={fetchdata}>
-        Fetch data
-      </button>
-      </div>
-      <div>
 
-      </div>
-      {data && (
-        <div className="container">
-          <h1>{data.name} ,{data.sys.country}</h1>
-          <div>Lat-{data.coord.lat}</div>
-          <div>Log-{data.coord.lon}</div>
-          <div className="temp"><h1>Temp {Math.round(data.main.temp)}^C</h1></div>
-        </div>
-      )}
+    }
+
+}
+  return (
+    <div>
+        <h1> Weather App</h1>
+        <input
+        type='text'
+        placeholder='Enter the city name'
+        value={city}
+        onChange={change}
+        />
+        <button onClick={handleChange}>Fetch data</button>
+        {weatherData && (
+        <div>
+          <h2>{weatherData.name}</h2>
+          <p>Temperature: {weatherData.main.temp /8}°C</p>
+          <p>Climatic condition: {weatherData.weather[0].description}</p>
+          <p>Wind speed: {weatherData.wind.speed}</p>
+          <p> Latitude: {weatherData.coord.lat}</p>
+          <p> Longitude: {weatherData.coord.lon}</p>
+          </div>)}
       
     </div>
-    
-
   )
 }
 
-export default App;
+export default Weather
+
